@@ -74,13 +74,13 @@ listing.controller("mainController", function($rootScope, $scope, $http, $routeP
 		//- Enables the facets : true/false
 		$scope.enableFacets = true;
 		//- Defines which facets we want to add
-		$scope.facets = ['set','language','contexts'];
+		$scope.facets = ['dccollection','language','contexts'];
 		$scope.limit_facets = {}; //{"set":["oeintute","prodinraagro"], "language":["en","fr"]}; // limit facets
 		$scope.limit_facets_number = 10; // limits the number of the facets in facets list
 
 		//SNIPPETS
 		//- Components inside snippet
-		$scope.snippetElements = ['title','description'];
+		$scope.snippetElements = ['dctitle','dcdescription', 'dcdocid'];
 		$scope.maxTextLength = 500;
 
 	});
@@ -109,6 +109,9 @@ listing.controller("mainController", function($rootScope, $scope, $http, $routeP
 	//- Mappings
 	$scope.mapping = {};
 
+	//- Offset for SearchMore()
+	$scope.offset = 0;
+
 	// FUNCTIONS
 	//@function `init_finder(schema, facets_type)` : Initialize Finder
 	//- @param schema {string} : defines the schema of the finder - options: 'akif', 'agrif'
@@ -119,31 +122,33 @@ listing.controller("mainController", function($rootScope, $scope, $http, $routeP
 		// For now we have 'training', 'educational', 'publications'.
 		// We can easily add more just by adding a new case in the following switch, and also add other options related to facets_type
 		switch(facets_type) {
+
 			case 'educational' :
 				//$scope.facets = ['language','learningResourceTypes','contexts','endUserRoles']; /* 'set' */
 				//$scope.limit_facets = {"set":["aglrnedunhmc"]};
 				mappings_file = 'config/educational_facets_mappings.json';
 				break;
 			default:
-			    $scope.facets = ['set','language','contexts'];
+			    $scope.facets = ['dccollection','language','contexts'];
 		}
 
 		// In every schema we define the specific elements we want to have in the snippets.
 		// Here can be added more schemas and also other options related to it.
 		switch(schema) {
 			case 'akif' :
-				$scope.snippetElements = [ "title", "description", "keywords" ]
+				$scope.snippetElements = [ "dctitle", "dcdescription","dcdocid", "keywords" ]
 				break;
 			default:
-			    $scope.facets = ['set','language','contexts'];
+			    $scope.facets = ['dccollection','language','contexts'];
 		}
 
 		//Check for selected schema. If nothing is selected we use as default the 'akif'.
-		if( schema!='akif' && schema!='agrif') {
+		/*if( schema!='akif' && schema!='agrif') {
 			$scope.schema = 'akif';
 		} else {
 			$scope.schema = schema;
-		}
+		}*/
+		$scope.schema='';
 
 
 

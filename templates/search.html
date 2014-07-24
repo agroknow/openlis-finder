@@ -1,5 +1,5 @@
 <div ng-controller="mainController" ng-init="init_finder('akif','educational')" >
-	<a href="#/" >{{languages.home}}</a>
+	
 	<form ng-submit="submit()" class="form-wrapper cf">
 		        <input ng-model="search_query" name="search_query" type="text" placeholder="{{languages.search_here}}..." >
 		        <button type="submit">{{languages.search}}</button>
@@ -89,12 +89,12 @@
 
 					<!-- results -->
 					<li class="snippet" ng-repeat="result in filtered = (results | filter:filterResults) ">
-						<span class="title"><a href="#/item/{{result.id}}_{{result.set}}">{{result.title}}</a></span>
-						<br> {{result.description}}
-						<br> <b><span class="hidden-xs">{{languages.keywords || 'Keywords'}}: </span></b>
+						<span class="title"><a href="#/item/{{result.dcdocid}}">{{result.dctitle}}</a></span>
+						<br> {{result.dcdescription}}
+						<br> <!--<b><span class="hidden-xs">{{languages.keywords || 'Keywords'}}: </span></b>
 							 <a ng-repeat="keys in result.keywords" href="#/educational/search/?q={{keys}}" >{{keys}}<span ng-show="$index != result.keywords.length-1">, </span></a>
 						<br ng-show="result.rights != undefined">
-							<b><span ng-show="result.rights != undefined" class="hidden-xs">{{languages.copyrights || 'Rights'}}: </span></b>
+							<b><span ng-show="result.rights != undefined" class="hidden-xs">{{languages.copyrights || 'Rights'}}: </span></b>-->
 						 	<a ng-show="result.rights != undefined" href="{{result.rights}}" target=_blank > {{result.rights}} </a>
 						<br>
 						 	<a class="col-md-2 btn btn-sm btn-default view_more" href="#/item/{{result.id}}_{{result.set}}"> {{languages.view_more}} </a>
@@ -106,7 +106,7 @@
 			<!-- LOAD MORE ITEMS -->
 			<div ng-controller="paginationController" style="text-align:center;">
 			<a class="btn btn-success" href="javascript:;" ng-click="loadMore(currentPage+1)"> {{languages.load_more}} </a>
-			<a class="btn btn-default" href="javascript:;" ng-click="scrollToTop()"> {{languages.back_to_top}}</a>
+			<a class="btn btn-default" href="javascript:;" ng-click="scrollToTop()"> {{languages.back_to_top}}</a><br/><br/>
 		</div>
 
 			<!-- Bottom Pagination -->

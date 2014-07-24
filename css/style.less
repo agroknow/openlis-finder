@@ -2,10 +2,10 @@
 @images_path : '../assets/images';
 
 /*colors*/
-@body_background: #E9E9E9; /*body background*/
-@main_background: #FFF; /*main content background*/
+@body_background: #FFF; /*body background*/
+@main_background: #eff3d7; /*main content background*/
 @color_1: rgba( 0, 0, 0, 0.8 ); /*text color*/
-@color_2: #154d62; /*links*/
+@color_2: #7b8b98; /*#154d62; links*/
 @color_3: #339e8f; /*links:hover*/
 @blue_raf: #9DBCBC;
 @blue: #2a6095;
@@ -47,9 +47,10 @@
 
 body{
 	width:100%;
+	height:100%;
 	margin:0 auto;
 	background-color: @body_background;
-	font-family: 'Signika',Tahoma, sans-serif;
+	font-family: Didact Gothic, sans-serif;
 	font-size: 14px;
 	color: @color_1;
 
@@ -68,35 +69,53 @@ body{
 	}
 }
 
+#navbar {
+	width:100%;
+	background-color: #7b8b98;
+	margin-bottom:0px;
+	
+}
+
+#nav-main {
+	margin-left:20%;
+}
+
+.nav-item a{
+	color:white;
+	font-weight:bold;
+}
 
 #akListing {
 
 	display:table;
-	margin:10px auto;
+	/* margin:10px auto; */
 	/* .rounded-corners(10px); */
 	/* max-width: 1000px; */
 	padding: 0;
 	width:100%;
+	height:100%;
 	background-color: @main_background;
 
 }
 
 .languages_block{
 	float:right;
-
+	margin-right:5%;
 	img{
 		width: 30px;
 		height: 30px;
+		margin-top:5px;
 	}
 }
 
 #wrap
 {
 	width:100%;
-	max-width: 970px;
+	height:100%;
+	/*max-width: 970px;*/
 	background:#FFFFFF;
 	min-height: 100%;
-	margin:12px auto;
+	margin:0px auto;
 	border:solid rgba( 0, 0, 0, .2) 1px;
 }
 
@@ -121,15 +140,15 @@ body{
 
 
 header {
-	background-image: url('@{images_path}/logo.png');
-	background-size: 100%;
+	background-image: url('@{images_path}/logo.jpg');
+	background-size: 20%;
 	background-repeat: no-repeat;
 	background-color: #FFF;
-	background-position: top;
+	background-position: center;
 
 	min-height: 160px;
 	width: 100%;
-	max-width: 960px;
+	/*max-width: 960px;*/
 	margin:0px auto;
 	display: block;
 	box-shadow: inset 0px -2px 6px rgba(0, 0, 0, 0.05);
@@ -137,16 +156,12 @@ header {
 }
 
 footer {
-	min-height: 100px;
+	min-height:66px;
 	width: 100%;
-	max-width: 960px;
 	margin:0px auto;
 	padding-top: 20px;
-	background-repeat: no-repeat;
-	background-position: center;
-	box-shadow: inset 0px 2px 6px rgba(0, 0, 0, 0.2);
 	text-align: center;
-	background:#263433 url(../assets/images/bg_footer.jpg) 0 0 repeat-x;
+	background-color:#e4e7d2;
 
 	/* tablet */
 	@media all and (min-width: 480px) and (max-width: 768px) {
@@ -169,6 +184,7 @@ footer {
 	max-width: 1015px;
 	min-width: 500px;
 	float:none;
+	
 
 }
 
@@ -541,7 +557,6 @@ footer {
 }
 
 #listing_container {
-
 	#listing {
 
 		.results {

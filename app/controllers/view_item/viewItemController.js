@@ -12,11 +12,9 @@ listing.controller("viewItemController", function($rootScope, $scope, $http, $lo
 	var language_mapping=[], audience_mapping=[];
 	language_mapping['en'] = "English";
 
-	/*AKIF URL*/
-	$scope.akif = 'http://api.greenlearningnetwork.com/search-api/v1/akif/';
 	/* $scope.item_resource_id = ''; */
 	$scope.item_resource_url = '';
-
+	$scope.api_path = 'http://83.212.100.142/proxy.php/';
 	//Elements default values
 	$scope.item_title = "No title available";
 	$scope.item_description = "No description available";
@@ -28,18 +26,16 @@ listing.controller("viewItemController", function($rootScope, $scope, $http, $lo
 	$rootScope.getItem = function() {
 
 		//we split the parameter from URL (i.e /item/35701_AGLRGFSP) and get the item id and the set
-		var item_identifier = $routeParams.itemId.split('_')[0]; //SET_ID
-		var item_set = $routeParams.itemId.split('_')[1];
-
-		var headers = {'Content-Type':'application/json','Accept':'application/json;charset=utf-8'};
-
-		$http({
-			method : 'GET',
-			url : $scope.akif + item_set + '/' + item_identifier, //..akif/ILUMINA/18169
-			type: 'json',
-			headers : headers
-		})
+		var item_docid = $routeParams.itemId.split('_')[0]; //SET_ID
+		$http.jsonp($scope.api_path+'?dcdocid='+item_docid+'&callback=JSON_CALLBACK')
 		.success(function(data) {
+			$scope.item_title = data.response.docs[0].dctitle;
+			$scope.item_description = data.response.docs[0].dcdescription;
+			$scope.item_organization = data.response.docs[0].dcprovider;
+			$scope.item_resource_url = data.response.docs[0].dclink;
+			$scope.item_language = data.response.docs[0].dclanguage;
+			$scope.item_year = data.response.docs[0].dcyear;
+			/*
 			//parse array and create a JS Object Array
 			//every item is a JSON
 			var thisJson = data.results[0];

@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
     <link href="http://fonts.googleapis.com/css?family=Signika" rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,500italic,400italic,300,300italic,100italic,100,700italic,900,900italic|Comfortaa:400,300,700|Didact+Gothic|Advent+Pro:400,100,200,300,500,600,700&subset=latin,greek' rel='stylesheet' type='text/css'>
     <link rel="apple-touch-icon" href="assets/images/nhmc_icon.png"/>
 
 
@@ -29,13 +30,24 @@
 <body ng-app="akListing" ng-cloak>
 		<div id="wrap" ng-controller="mainController" ng-init="init_language()" >
 			<header ></header>
-
-			<!-- Language-->
-			 <div class="languages_block">
-				 <a href="javascript:;" ng-click="change_language('el')"><img src="assets/images/flag_gr_round.png" ></a>
-				 <a href="javascript:;" ng-click="change_language('en')"><img src="assets/images/flag_en_round.png" ></a>
-			 </div>
+			
+			<nav id="navbar" class="navbar" role="navigation">
+				<div class="container-fluid">
+				<div class="collapse navbar-collapse">
+     				 <ul id="nav-main" class="nav navbar-nav">
+					<li><a class="nav-item" href="#/">{{languages.home}}</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+       				 <li><a href="javascript:;" ng-click="change_language('el')"><img src="assets/images/el.png" ></a></li>
+				 <li><a href="javascript:;" ng-click="change_language('en')"><img src="assets/images/en.png" ></a></li>				
+				</ul>
+				</div></div>
+				</div>
+				
+			</nav>
 			<!-- / Language -->
+
+			
 
 			<div id="akListing"> <!-- class="col-xs-12 col-sm-12 col-md-12" -->
 		        <div ng-view>
@@ -46,7 +58,7 @@
 				sometext
 			</footer>-->
 		</div>
-		<div id="address_footer"><p class="aligncenter">&nbsp;</p></div>
+		<!--<div id="address_footer"><p class="aligncenter">&nbsp;</p></div>-->
 
 	<!-- ----------- -->
 	<!-- angular -->
@@ -69,7 +81,7 @@
     <!-- <script type="text/javascript" src="https://agroknow.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e/en_US-95vtla/6322/8/1.4.11/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=7bdc0edb"></script> -->
 
 
-
+<footer>&copy; Powered by <a href="http://www.agroknow.gr" target="_blank">AgroKnow</a></footer>
 </body>
 
 </html>

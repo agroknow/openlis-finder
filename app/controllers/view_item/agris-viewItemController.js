@@ -51,7 +51,6 @@ listing.controller("agris-viewItemController", function($scope, $http, $location
 
 	/************************************************** GET ITEM *****************************/
 	$scope.getItem = function() {
-
 		var id_set = $routeParams.itemId.split('_'); //../ID_SET (maybe id contains '_' so we need to find which one is ID and which is the set
 		var item_identifier = '';
 		for( var i=0, length=id_set.length; i<length-1; i++ ) {

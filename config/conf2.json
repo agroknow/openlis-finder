@@ -1,17 +1,15 @@
 {
-  "baseUrl": "http://83.212.100.142/proxy.php",
+  "baseUrl": "http://api.greenlearningnetwork.com:8080/search-api/v1/",
   "enableFacets": true,
   "enablePaginationBottom": true,
   "enablePaginationTop": true,
   "enableLoadMore":true,
   "facets": [
-    "f_dccollection",
-    "f_dcsubject",
-    "f_dccontenttype",
-    "f_dclang",
-    "f_dcperson",
-    "f_dctypenorm",
-    "f_dcyear"
+    "set",
+    "language",
+    "contexts",
+    "learningResourceTypes",
+    "endUserRoles"
   ],
   "limitPagination": 10,
   "limit_facets": {

@@ -1,0 +1,48 @@
+
+
+<!-- VIEW ITEM -->
+<hr>
+<div id="view_item" ng-controller="viewItemController" ng-init="getItem()">
+
+
+<!--<form ng-submit="submit('educational')" class="form-wrapper cf" >
+    <input ng-model="search_query" name="search_query" type="text" placeholder="{{languages.search_here}}..." >
+    <button type="submit">{{languages.search}}</button>
+</form>-->
+
+	<article id="main_content" class="col-xs-12 col-sm-12 col-md-12 ">
+        <a href="{{item_resource_url}}" target=_blank ><h3 id="itemTitle">{{item_title}}</h3></a>
+        <ul class="col-xs-12 col-sm-9 col-md-9">
+			 <li><span class="labels">{{languages.description || 'Description' }} : </span> <br>
+			 	{{item_description}}
+			 	</li>
+			 <!--<li><span class="labels">{{languages.keywords || 'Keywords' }} : </span>
+			 	<a ng-repeat="keys in item_keywords" href="#/educational/search/?q={{keys}}" >{{keys}}<span ng-show="$index != item_keywords.length-1">, </span> </a>
+			 </li>-->
+			 <li ng-show="item_organization!=undefined" ><span class="labels">{{languages.organization || 'Organization' }}: </span> {{item_organization}} </li>
+			 <li ng-show="item_language!=undefined" ><span class="labels">{{languages.language || 'Language' }}: </span> {{item_language}} </li>
+			 <li ng-show="item_coverage!=undefined" ><span class="labels">{{languages.location || 'Location' }}: </span> {{item_coverage}}</li>
+			<li ng-show="item_year!=undefined" ><span class="labels">{{languages.year || 'Year' }}: </span> {{item_year}}</li>
+			 <li ng-show="item_resource_types.length > 0" ><span class="labels">{{languages.learningResourceTypes || 'Resource Type' }}: </span> <span ng-repeat="types in item_resource_types">{{types}}<span ng-show="$index != item_resource_types.length-1">, </span> </span></li>
+
+			 <li ng-show="item_roles.length > 0" ><span class="labels">{{languages.key_audience || 'Key Audience' }}: </span> <span ng-repeat="roles in item_roles"> {{roles}}<span ng-show="$index != item_roles.length-1">, </span> </span></li>
+			 <li ng-show="item_context.length > 0" ><span class="labels">{{languages.context || 'Context' }}: </span> <span ng-repeat="context in item_context"> {{context}}<span ng-show="$index != item_context.length-1">, </span> </span></li>
+			 <li ng-show="item_rights!=undefined" ><span class="labels">{{languages.copyrights || 'Rights' }}: </span> <a href="{{item_rights}}" target=_blank > {{item_rights}}</a></li>
+		 </ul>
+
+		 <div ng-show="item_icon != undefined" class="hidden-xs col-sm-3 col-md-3">
+			 <a href="{{item_resource_url}}" target=_blank ><img class="item_thumb" src="assets/images/{{item_icon}}"></a>
+		 </div>
+
+		<div class="col-xs-12 col-sm-12 col-md-12" style="text-align: center;" >
+			<a href="{{item_resource_url}}" class="btn btn-bg btn-default" target=_blank >{{languages.access_the_resource || 'Access the resource' }}</a>
+			<a href="javascript:history.back();" class="btn btn-bg btn-default" target=_blank > | {{languages.back_to_search}} </a>
+		</div>
+	
+	</article>
+
+</article>
+</div>
+</div>
+
+<br/>

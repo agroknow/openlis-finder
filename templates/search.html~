@@ -93,7 +93,7 @@
 						<span class="title"><a href="#/item/{{result.dcdocid}}">{{result.dctitle}}</a></span>
 						<br> {{result.dcdescription}}
 						<br> <b>Content Provider: </b>{{result.dcprovider}}
-						<br> <b>Creators/Contributors: </b>{{result.dcperson}}
+						<br> <b>Creators/Contributors</b> {{result.dcperson}}
 						<br> <!--<b><span class="hidden-xs">{{languages.keywords || 'Keywords'}}: </span></b>
 							 <a ng-repeat="keys in result.keywords" href="#/educational/search/?q={{keys}}" >{{keys}}<span ng-show="$index != result.keywords.length-1">, </span></a>
 						<br ng-show="result.rights != undefined">

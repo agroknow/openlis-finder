@@ -38,15 +38,15 @@
 			var flg = true; //needed for clearing the activeFacets at first time
 			//check url
 			for(i in $scope.facets) {
-		    	if($scope.facets[i] in $routeParams) {
-					var terms = $routeParams[$scope.facets[i].toString()].split(',');
-					//separate different terms of same facet
-					for(j in terms) {
-						var facet = { 'facet' : $scope.facets[i].toString() , 'term' : terms[j]} ;
-						//push item in activeFacets, if it's not in the array
-						$scope.activeFacets.push(facet);
-					}
-		    	}
+			    	if($scope.facets[i] in $routeParams) {
+						var terms = $routeParams[$scope.facets[i].toString()].split(',');
+						//separate different terms of same facet
+						for(j in terms) {
+							var facet = { 'facet' : $scope.facets[i].toString() , 'term' : terms[j]} ;
+							//push item in activeFacets, if it's not in the array
+							$scope.activeFacets.push(facet);
+						}
+			    	}
 			}
 
 			$scope.results = [];
@@ -124,7 +124,6 @@
 				/*$location.search(activeFacetSplit[tempfacet].split('=')[0],activeFacetSplit[tempfacet].split('=')[1]); */
 			}
 		}
-
 		//CHECK IF USER called the loading more or the classic pagination
 		if ( pagination_type == 'classic') {
 			$scope.search(query);
@@ -137,9 +136,11 @@
 	//function `search()` works with PAGINATION.
 	//Serves content per page
 	$scope.search = function(query) {
-		query=query+"&offset="+$scope.offset;
+		alert("edw");
+		$scope.offset = ($rootScope.currentPage-1)*10;
+		query = query+"&offset="+$scope.offset;
 		$http.jsonp(query).success(function(data) {
-			console.log(data);
+			console.log(data.response);
 			var clear_facets = '{';			
 			/*Add facets*/
 			if($scope.enableFacets) {
@@ -170,7 +171,6 @@
 			}
 			//Print snippets
 			$scope.results.length = 0;//clear results
-			console.log(data);
 			angular.forEach(data.response.docs, function(doc, index){
 			  	//Listing Results
 			  	var json = $scope.getSnippet(doc, $scope.snippetElements);
@@ -181,7 +181,6 @@
 			
 			$scope.loading = false;
 			sharedProperties.setTotal(data.response.numFound);
-			$scope.offset = $scope.offset+10;
 			$scope.update();
 
 		})
@@ -196,9 +195,10 @@
 	//function `searchMore()` works with LOAD MORE.
 	//Append content per page
 	$scope.searchMore = function(query) {
-		query=query+"&offset="+$scope.offset;
+		$scope.offset = ($rootScope.currentPage-1)*10;
+		query = query+"&offset="+$scope.offset;
 		$http.jsonp(query).success(function(data) {
-			console.log(data);
+			
 			var clear_facets = '{';			
 			/*Add facets*/
 			if($scope.enableFacets) {
@@ -228,7 +228,7 @@
 				$scope.inactiveFacets.push(JSON.parse($scope.sanitize(clear_facets)));
 			}
 			//Print snippets
-			$scope.results.length = 0;//clear results
+			//$scope.results.length = 0;//clear results
 			angular.forEach(data.response.docs, function(doc, index){
 			  	//Listing Results
 			  	var json = $scope.getSnippet(doc, $scope.snippetElements);
@@ -239,7 +239,6 @@
 			
 			$scope.loading = false;
 			sharedProperties.setTotal(data.response.numFound);
-			$scope.offset = $scope.offset+10;
 			$scope.update();
 
 		})
@@ -281,7 +280,6 @@
 				}
 			}
 		temp = '{' + equals + '}';
-		alert(temp);
 			//return every snippet as JSON
 			return JSON.parse($scope.sanitize(temp));
 	}

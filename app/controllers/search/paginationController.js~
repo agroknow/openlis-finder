@@ -68,6 +68,8 @@ listing.controller("paginationController", function($rootScope, $scope, sharedPr
 		
 		console.log(pageNum);
 		$rootScope.currentPage = pageNum;
+		$scope.offset = (pageNum-1)*10;
+		alert($scope.offset);
 	    	$scope.findElements(false, 'mobile'); //calls the search and appends elements in listing
 	}
 

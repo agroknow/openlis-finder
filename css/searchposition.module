@@ -1,0 +1,482 @@
+<?php
+
+/**
+ * @file
+ * Search Position Form Module
+ */
+ 
+ 
+ module_load_include('php', 'createposition', 'Employer');
+ module_load_include('php', 'createposition', 'Utilities');
+ module_load_include('php', 'createposition', 'WebServicesCall');
+ module_load_include('php', 'createposition', 'Position');
+
+/**
+ * Globals 
+ */
+//$employers_list = get_employers_callback();
+$positions_list = get_positions_callback();
+// add ajax library for in order to use ajax outside forms ( in forms you do not need this libraly, only the #ajax property )
+//drupal_add_library('system', 'drupal.ajax');
+//drupal_add_library('system', 'jquery.form');
+//print_r($employers_list);
+
+/**
+ * Implements hook_menu().
+ *
+ * Here we set up the URLs (menu entries) for the
+ * form examples. Note that most of the menu items
+ * have page callbacks and page arguments set, with
+ * page arguments set to be functions in external files.
+ */
+function searchposition_menu() {
+    $items['searchposition'] = array(
+        'title' => 'Αναζήτηση Θέσης Πρακτικής Άσκησης',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('searchposition_form'),
+        'access callback' => TRUE,
+        'access callback' => '_accessCheckSearchPosition',
+         'menu_name'       => 'main-menu',
+        'type' => MENU_NORMAL_ITEM
+    );
+    
+    
+        $items['searchposition/page/%'] = array(
+	'page callback' => 'searchposition_overlay',
+    'access arguments' => array('access content'),
+    'page arguments' => array(2),
+    'type' => MENU_CALLBACK,
+    'file' => 'searchposition.inc',
+     'access callback' => TRUE,
+     'access callback' => '_accessCheckSearchPosition',
+  );
+    
+    
+    return $items;
+}
+
+
+
+
+function _accessCheckSearchPosition()
+{
+	 global $user;
+
+  // Check to see if $user has the administrator role.
+  if (in_array('administrator', array_values($user->roles)) || in_array('υπεύθυνος', array_values($user->roles))
+  || in_array('geographyStudent', array_values($user->roles))
+  || in_array('homeEconomicsStudent', array_values($user->roles))
+  || in_array('dieteticsStudent', array_values($user->roles))
+  || in_array('computerStudent', array_values($user->roles))
+    
+  ) {
+    return TRUE;
+  }
+  else
+  {
+	 return FALSE;
+  }
+	
+}
+
+
+
+
+/**
+ * Form builder; 
+ */
+function searchposition_form($form, &$form_state) {
+
+    $form['searchposition_fieldset'] = array(
+        '#type' => 'fieldset'
+    );
+    
+  $options=array(
+     '-Επιλέξτε-' => t('-Επιλέξτε-'),
+    'ΠΕ ΔΙΑΙΤΟΛΟΓΩΝ' => t('Τμήμα Επιστήμης Διατροφής-Διαιτολογίας'),
+    'ΠΕ ΓΕΩΓΡΑΦΩΝ' => t('Τμήμα Γεωγραφίας'),
+    'ΠΕ ΟΙΚΙΑΚΗΣ ΟΙΚΟΝΟΜΙΑΣ' => t('Τμήμα Οικιακής Οικονομίας'),
+    'ΠΕ ΠΛΗΡΟΦΟΡΙΚΗΣ' => t('Τμήμα Πληροφορικής και Τηλεματικής'),
+    );
+    
+    
+    $form['searchposition_fieldset']['field'] = array(
+        '#title' => t('Πεδίο'),
+        '#type' => 'select',
+        '#options' => $options,
+
+    );
+    
+ 
+     /*$options = array(
+    '-Επιλέξτε-' => t('-Επιλέξτε-'),
+    'ΠΛΗΡΟΥΣ_ΑΠΑΣΧΟΛΗΣΗΣ' => t('ΠΛΗΡΟΥΣ ΑΠΑΣΧΟΛΗΣΗΣ'),
+    'ΜΕΡΙΚΗΣ_ΑΠΑΣΧΟΛΗΣΗΣ' => t('ΜΕΡΙΚΗΣ ΑΠΑΣΧΟΛΗΣΗΣ'),
+    
+  );
+    
+ 
+        $form['searchposition_fieldset']['type'] = array(
+        '#title' => t('Σχέση Εργασίας'),
+        '#type' => 'hidden',
+		'#value' => 'practice',
+        '#options' => $options,
+
+    );*/
+    
+      
+        global $positions_list;
+       
+        $i = 0;
+   
+        $city_list = array();
+		array_push($city_list, '-Επιλέξτε-');
+        foreach ($positions_list as $value) {
+	     array_push($city_list, $value->city);
+       }
+      
+      $city_list = array_unique($city_list); 
+  
+      
+       $form['searchposition_fieldset']['region'] = array(
+        '#title' => t('Περιοχή'),
+        '#type' => 'select',
+        '#options' => $city_list,
+
+    );
+    
+    
+
+        // Submit button
+	$form['searchposition_fieldset']['submit'] = array(
+	'#type' => 'submit',
+	'#access' => TRUE,
+	'#value' => t('Εφαρμογή'),
+	              '#id' => 'searchpositionsubmituniqueid',
+		'#default_value' => '-Επιλέξτε-',
+  '#ajax' => array(
+'callback' => 'filter_searchposition_update_callback',
+'wrapper' => 'searchpositions_filter',
+'effect' => 'slide',
+'method' => 'replace',//!!!!!!!!!!NOT THE DEFAULT replace
+ ), 
+);
+
+
+
+
+    $form['searchposition_table'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div id="searchpositions_filter">',
+    '#markup' => drupal_render(render_filtered_searchposition_list($positions_list)),
+    '#suffix' => '</div>',
+    '#weight' => 10,
+  );
+    
+
+
+
+    //or search
+
+    return $form;
+}
+
+
+
+
+function render_filtered_searchposition_list($positions_list) {
+
+	  drupal_add_library('system', 'drupal.ajax');
+      $vars['header'] = array('Ημερομηνία Εισαγωγής','Περιγραφή', 'Περιοχή');
+      $vars['empty'] = 'Δεν υπάρχουν εγγραφές';
+      $vars['rows'] = array();
+   //   global $positions_list;
+     foreach ($positions_list as $value) {
+       $options=array();
+    //   $options['attributes']['onclick']='if(!confirm("Really Delete?")){ return false;}';
+	  // $options['attributes']['class']='use-ajax';
+		//$delete_link=l(t('Delete'), 'createposition/update/nojs/'.$value->position_id/, array('attributes' => array('class' => 'use-ajax') ));
+      // $delete_link=l(t('Delete'), 'createposition/update/nojs/'.$value->position_id, $options);  
+       //$delete_link=l('Διαγραφή', 'createposition/update/delete_position/'.$value->position_id, array( 'attributes' => array('rel' => 'lightmodal[|width:700px; height:70px;]')));     
+      // $modify_link=l('Ενημέρωση', 'createposition/update/update_position/'.$value->position_id, array( 'attributes' => array('rel' => 'lightmodal[|width:800px; height:800px;]')));     
+       
+      // $excerpt = get_excerpt( 50 , $value->description );
+	 //  $excerpt_qualifications = get_excerpt( 50 , $value->qualifications );
+	   
+	   $name = $value->position;
+	   $position_link=l($name, 'searchposition/page/'.$value->position_id);
+       
+       $vars['rows'][] =  array($value->start_date, $position_link,$value->city );
+    }
+
+    $tree = pager_array_splice($vars['rows'], 10);// very important for the pager
+    $render_array['table'] = array(
+     '#theme' => 'table',
+     '#rows' => $tree ,    
+     '#empty' => 'Δεν υπάρχουν εγγραφές',
+     '#header' => $vars['header'] ,
+  );
+ 
+  $render_array['pager'] = array(
+      '#theme' => 'pager',
+  );
+  
+  
+
+
+  // Do something with the 5 terms
+  //$output .= theme('pager', array('quantity' => 5));
+ 
+ //$tree = pager_array_splice($vars, 5);
+  // Do something with the 5 terms
+   //$render_array .= theme('pager', array('quantity' => 5));
+  
+  
+ return $render_array;
+   //  return theme('table',$vars);
+    }
+
+
+
+
+
+
+
+
+
+
+function filter_searchposition_update_callback($form, &$form_state)
+{
+	  //$type;
+	  $field;
+	  $city;
+	
+	
+      $key1 = $form_state['values']['field'];
+      $field = $form['searchposition_fieldset']['field']['#options'][$key1];
+			
+	  /*$key = $form_state['values']['type'];
+      $temp = $key;
+	        if ( $temp == '1' )
+				{
+					$type="full_time";
+				}
+			else if ( $temp == '2')
+				{
+					$type="part_time";
+				}
+			else
+				{
+					$type='-Επιλέξτε-';
+				}*/
+				
+				
+				
+	//	//$key = $form_state['values']['region'];
+  //  $temp = $key;
+    
+      $key1 = $form_state['values']['region'];
+      $city = $form['searchposition_fieldset']['region']['#options'][$key1];
+      $city = trim($city);
+      //$type = trim($type);
+
+  global $positions_list;
+  $filter_list = array();
+  $matches_ids = array();
+  $index=0;
+  
+  
+   /*if ( trim($type) != '-Επιλέξτε-' )
+	 {   
+		 $index=$index+1;
+	 }*/
+	 if ( trim($field) != '-Επιλέξτε-' )
+		 {
+			 $index=$index+1;
+		 }
+		 	 if( trim($city) !='-Επιλέξτε-')
+		 {  
+			   $index=$index+1;
+	 }
+		 
+	  //drupal_set_message('Type $index: '.$index);
+  
+     foreach ($positions_list as $value) {
+		 /*if ( trim($type) != '-Επιλέξτε-' )
+		 {  // $index=$index+1;
+		 //drupal_set_message('Type $type: '.$type);
+			 if ( $value->type == $type )
+			 {
+				 array_push( $matches_ids, $value->position_id );
+			 }
+		 }*/
+		 if ( trim($field) != '-Επιλέξτε-' )
+		 {
+			// $index=$index+1;
+			//  drupal_set_message('Type $field: '.$field);
+			if ( $value->field == $field )
+			 {
+				 array_push( $matches_ids, $value->position_id );
+			 }
+			 
+		 }
+		 if( trim($city) !='-Επιλέξτε-')
+		 {   // $index=$index+1;
+			  // drupal_set_message('Type $city: '.$city);
+			if ( $value->city == $city )
+			 {
+				 array_push( $matches_ids, $value->position_id );
+			 }
+			 
+		 }
+		 
+		 
+
+    }
+    
+ 
+    	$m=array_count_values($matches_ids);
+    	//drupal_set_message($m);
+	while($element = current($m)) {
+   if ($index==$element)
+  {//drupal_set_message($index);
+					foreach($positions_list as $value) {
+					if(key($m)==$value->position_id)
+					{
+					// drupal_set_message($value->position_id);
+					  array_push($filter_list,$value);	
+					}
+					
+		}	
+			}			
+    next($m);
+}
+
+    
+    if ($index=='0')
+	{
+		//drupal_set_message('Index inside: '.$index);
+		$form['searchposition_table']['#markup']=drupal_render(render_filtered_searchposition_list($positions_list));
+	}
+	else
+	{    // drupal_set_message('Index inside !0 : '.$index);
+		  $form['searchposition_table']['#markup']=drupal_render(render_filtered_searchposition_list($filter_list));
+	}
+	
+    	return  $form['searchposition_table'];
+}
+
+
+
+
+
+
+function searchposition_form_validate($form, &$form_state)
+{
+	
+
+
+}
+
+
+/**
+* Save configuration settings for search position module.
+*/
+function searchposition_form_submit($form, &$form_state) {
+	  $type;
+	  $field;
+	  $city;
+	
+	
+      $key1 = $form_state['values']['field'];
+      $field = $form['searchposition_fieldset']['field']['#options'][$key1];
+			
+	  $key = $form_state['values']['type'];
+      $temp = $key;
+	        if ( $temp == '1' )
+				{
+					$type="full_time";
+				}
+			else if ( $temp == '2')
+				{
+					$type="part_time";
+				}
+			else
+				{
+					$type='-Επιλέξτε-';
+				}
+				
+				
+				
+	//	//$key = $form_state['values']['region'];
+  //  $temp = $key;
+    
+      $key1 = $form_state['values']['region'];
+      $city = $form['searchposition_fieldset']['region']['#options'][$key1];
+
+
+  global $positions_list;
+  $filter_list = array();
+  $matches_ids = array();
+  $index=0;
+  //drupal_set_message('Type: '.$type);
+     foreach ($positions_list as $value) {
+		 if ( trim($type) != '-Επιλέξτε-' )
+		 {   $index=$index+1;
+			 if ( $value->field == $field )
+			 {
+				 array_push( $matches_ids, $value->position_id );
+			 }
+		 }
+		 if ( trim($field) != '-Επιλέξτε-' )
+		 {
+			 
+			if ( $value->type == $type )
+			 {
+				 array_push( $matches_ids, $value->position_id );
+			 }
+			 
+		 }
+		 if( trim($city) !='-Επιλέξτε-')
+		 {
+			  
+			if ( $value->city == $city )
+			 {
+				 array_push( $matches_ids, $value->position_id );
+			 }
+			 
+		 }
+		 
+		 
+
+    }
+    
+ 
+    	$m=array_count_values($matches_ids);
+	while($element = current($m)) {
+   if ($index==$element)
+   {
+					foreach($positions_list as $value) {
+					if(key($m)==$value->position_id)
+					{
+					 //drupal_set_message($value->position_id);
+					  array_push($filter_list,$value);	
+					}
+					
+		}		}			
+    next($m);
+}
+
+    
+    //if ($index==0)
+	//{
+		//drupal_set_message('Index inside: '.$index);
+	//	$form['searchposition_table']['#markup']=drupal_render(render_filtered_searchposition_list($positions_list));
+	//}
+	//else
+	//{
+		  $form['searchposition_table']['#markup']=drupal_render(render_filtered_searchposition_list($filter_list));
+	//}
+	
+   return  	$form['searchposition_table'];
+}

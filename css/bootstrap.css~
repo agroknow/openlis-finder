@@ -3788,7 +3788,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .navbar-nav > li > a {
   /*padding-top: 10px;
   padding-bottom: 10px;*/
-  line-height: 30px;
+  line-height: 35px;
   color:white;
   font-weight:bold;
   font-size:15px;
@@ -5785,4 +5785,5 @@ button.close {
     display: none !important;
   }
 }
+
 /*# sourceMappingURL=bootstrap.css.map */

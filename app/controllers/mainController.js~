@@ -136,7 +136,7 @@ listing.controller("mainController", function($rootScope, $scope, $http, $routeP
 		// Here can be added more schemas and also other options related to it.
 		switch(schema) {
 			case 'akif' :
-				$scope.snippetElements = [ "dctitle", "dcdescription","dcprovider","dcperson","dcdocid", "keywords" ]
+				$scope.snippetElements = [ "dctitle", "dcdescription","dcprovider","dcperson","dclink","dcdocid", "keywords" ]
 				break;
 			default:
 			    $scope.facets = ['dccollection','language','contexts'];
